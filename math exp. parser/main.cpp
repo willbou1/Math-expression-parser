@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include <stack>
+#include "stack.h"
 #include <queue>
 #include <vector>
 #include <sstream>
@@ -233,7 +233,6 @@ void toPostfix(queue<string> &output, stack<char> &operators, vector<token> &tok
 							char curr = operators.top();
 							if (curr == '(')
 								break;
-							int p;
 							if (pTable[curr] > pTable[it->value[0]]) {
 								operators.pop();
 								output.push(ctos(curr));
