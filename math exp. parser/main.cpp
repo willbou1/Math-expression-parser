@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include "stack.h"
-#include <queue>
+#include "queue.h"
 #include <vector>
 #include <sstream>
 #include <map>
@@ -27,8 +27,8 @@ void initPriority();
 void tokenize(const string &, vector<token> &);
 void verify(vector<token> &);
 int checkParentesis(vector<char> &);
-void toPostfix(queue<string> &, stack<char> &, vector<token> &);
-long double resolve(queue<string> &);
+void toPostfix(queue &, stack<char> &, vector<token> &);
+long double resolve(queue &);
 long double parse(const string &);
 int pVerify(string);
 
@@ -210,7 +210,7 @@ int checkParentesis(vector<char> &parentesis) {
 	return 0;
 }
 
-void toPostfix(queue<string> &output, stack<char> &operators, vector<token> &tokens) {
+void toPostfix(queue &output, stack<char> &operators, vector<token> &tokens) {
 	for (vector<token>::iterator it = tokens.begin(); it != tokens.end(); it++) {
 		if (it->type == 'n')
 			output.push(it->value);
@@ -254,7 +254,7 @@ void toPostfix(queue<string> &output, stack<char> &operators, vector<token> &tok
 	}
 }
 
-long double resolve(queue<string> &output) {
+long double resolve(queue &output) {
 	stack<string> operands;
 	while (output.size() != 0) {
 		string curr = output.front();
@@ -275,11 +275,12 @@ long double resolve(queue<string> &output) {
 	return stold(operands.top());
 }
 
-void show(queue<string> output) {
+void show(queue &output) {
+	queue::item *curr = output.getFront();
 	cout << "Postfix: ";
-	while (output.size() != 0) {
-		cout << output.front() << " ";
-		output.pop();
+	while (curr) {
+		cout << curr->data << " ";
+		curr = curr->prev;
 	}
 	cout << endl;
 }
@@ -287,7 +288,7 @@ void show(queue<string> output) {
 long double parse(const string &exp) {
 	vector<token> tokens;
 	stack<char> operators;
-	queue<string> output;
+	queue output;
 	try {
 		tokenize(exp, tokens);
 		cout << "Tokens: ";

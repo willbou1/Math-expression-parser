@@ -1,26 +1,59 @@
 #include "queue.h"
 
-template <class T>
-void queue<T>::push(T data) {
-	
+queue::queue() {
+	m_front = m_back = NULL;
 }
 
-template <class T>
-void queue<T>::pop() {
-
+void queue::push(string data) {
+	if (!m_front && !m_back)
+		m_front = m_back = new item(data);
+	else {
+		item *temp = m_back;
+		m_back = new item(data, temp);
+		temp->prev = m_back;
+	}
 }
 
-template <class T>
-T queue<T>::front() const {
-
+void queue::pop() {
+	if (!m_front && !m_back)
+		return;
+	item *temp = m_front->prev;
+	delete m_front;
+	if (m_back == m_front)
+		m_back = NULL;
+	m_front = temp;
+	if (temp)
+		temp->next = NULL;
 }
 
-template <class T>
-T queue<T>::back() const {
-
+string queue::front() {
+	if (!m_front && !m_back)
+		return NULL;
+	return m_front->data;
 }
 
-template <class T>
-int queue<T>::size() const {
+string queue::back() {
+	if (!m_front && !m_back)
+		return NULL;
+	return m_back->data;
+}
 
+int queue::size() {
+	if (!m_front && !m_back)
+		return 0;
+	item *curr = m_back;
+	int s = 1;
+	while (curr != m_front) {
+		curr = curr->next;
+		s++;
+	}
+	return s;
+}
+
+queue::item *queue::getFront() {
+	return m_front;
+}
+
+queue::item *queue::getBack() {
+	return m_back;
 }

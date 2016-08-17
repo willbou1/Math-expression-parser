@@ -1,26 +1,30 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
-template <class T>
+#include <string>
+
+using namespace std;
+
 class queue {
-private:
+public:
 	struct item {
-		item(T x, item *y, item *y) : data(x), next(y), prev(z) {}
+		item(string x, item *y = NULL, item *z = NULL) : data(x), next(y), prev(z) {}
 		item *next;
-		T data;
+		string data;
 		item *prev;
 	};
-	item *front, *back;
-
-public:
-	void push(T);
+	queue();
+	void push(string);
 	void pop();
-	T front() const;
-	T back() const;
-	int size() const;
+	string front();
+	string back();
+	item *getFront();
+	item *getBack();
+	int size();
+
+private:
+	item *m_front, *m_back;
 
 };
-
-#include "queue.cpp"
 
 #endif

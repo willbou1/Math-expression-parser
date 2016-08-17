@@ -36,8 +36,8 @@ int stack<T>::size() const {
 	if (root == NULL)
 		return 0;
 	item *curr = root;
-	int s = 1;
-	while (curr->next) {
+	int s = 0;
+	while (curr) {
 		curr = curr->next;
 		s++;
 	}
