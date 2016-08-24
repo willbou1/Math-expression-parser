@@ -157,12 +157,12 @@ void verify(vector<token> &tokens) {
 		throw error("Verification error", "You can not end an expression with an operator");
 	}
 	vector<char> parentesis;
-	bool lwo = false, lwn = false;
+	bool lwo = false, lwn = false, otp = false;
 	for (vector<token>::iterator it = tokens.begin(); it != tokens.end(); it++) {
 		if (it->type == 'n') {
 			if (lwn)
 				throw error("Verification error", "You can not have a number following another number");
-			lwn = true;
+			otp = lwn = true;
 			lwo = false;
 		}
 		else {
@@ -179,11 +179,13 @@ void verify(vector<token> &tokens) {
 			else {
 				if (lwo)
 					throw error("Verification error", "You can not have an operator following another operator");
-				lwo = true;
+				otp = lwo = true;
 				lwn = false;
 			}
 		}
 	}
+	if (!otp)
+		throw error("Verification error", "You must have something else than parentesis in your expression");
 	if (parentesis.size() != 0) {
 		cout << "Parentesis: ";
 		for (vector<char>::iterator it = parentesis.begin(); it != parentesis.end(); it++)
@@ -195,14 +197,15 @@ void verify(vector<token> &tokens) {
 }
 
 int checkParentesis(vector<char> &parentesis) {
-	if (parentesis.front() == ')')
-		return 1;
 	stack<char> s;
 	for (vector<char>::iterator it = parentesis.begin(); it != parentesis.end(); it++) {
 		if (*it == '(')
 			s.push('(');
-		else
+		else {
+			if (s.size() == 0)
+				return 1;
 			s.pop();
+		}
 	}
 	
 	if (s.size() != 0)
