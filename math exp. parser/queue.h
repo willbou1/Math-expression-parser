@@ -8,7 +8,7 @@ using namespace std;
 class queue {
 public:
 	struct item {
-		item(string x, item *y = NULL, item *z = NULL) : data(x), next(y), prev(z) {}
+		item(string data, item *next = NULL, item *prev = NULL) : data(data), next(next), prev(prev) {}
 		item *next;
 		string data;
 		item *prev;
@@ -16,11 +16,11 @@ public:
 	queue();
 	void push(string);
 	void pop();
-	string front();
-	string back();
-	item *getFront();
-	item *getBack();
-	int size();
+	string front() const;
+	string back() const;
+	item *getFront() const;
+	item *getBack() const;
+	int size() const;
 
 private:
 	item *m_front, *m_back;

@@ -5,7 +5,7 @@ queue::queue() {
 }
 
 void queue::push(string data) {
-	if (!m_front && !m_back)
+	if (!m_front)
 		m_front = m_back = new item(data);
 	else {
 		item *temp = m_back;
@@ -15,7 +15,7 @@ void queue::push(string data) {
 }
 
 void queue::pop() {
-	if (!m_front && !m_back)
+	if (!m_front)
 		return;
 	item *temp = m_front->prev;
 	delete m_front;
@@ -26,20 +26,20 @@ void queue::pop() {
 		temp->next = NULL;
 }
 
-string queue::front() {
-	if (!m_front && !m_back)
+string queue::front() const {
+	if (!m_front)
 		return NULL;
 	return m_front->data;
 }
 
-string queue::back() {
-	if (!m_front && !m_back)
+string queue::back() const {
+	if (!m_front)
 		return NULL;
 	return m_back->data;
 }
 
-int queue::size() {
-	if (!m_front && !m_back)
+int queue::size() const {
+	if (!m_front)
 		return 0;
 	item *curr = m_back;
 	int s = 1;
@@ -50,10 +50,10 @@ int queue::size() {
 	return s;
 }
 
-queue::item *queue::getFront() {
+queue::item *queue::getFront() const {
 	return m_front;
 }
 
-queue::item *queue::getBack() {
+queue::item *queue::getBack() const {
 	return m_back;
 }

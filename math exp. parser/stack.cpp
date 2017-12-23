@@ -1,9 +1,7 @@
 #include "stack.h"
 
 template <class T>
-stack<T>::stack() {
-	root = NULL;
-}
+stack<T>::stack() : root(NULL) {}
 
 template <class T>
 void stack<T>::push(T data) {
@@ -17,7 +15,7 @@ void stack<T>::push(T data) {
 
 template <class T>
 void stack<T>::pop() {
-	if (root == NULL)
+	if (!root)
 		return;
 	item *temp = root->next;
 	delete root;
@@ -26,14 +24,14 @@ void stack<T>::pop() {
 
 template <class T>
 T stack<T>::top() const {
-	if (root == NULL)
+	if (!root)
 		return NULL;
 	return root->data;
 }
 
 template <class T>
 int stack<T>::size() const {
-	if (root == NULL)
+	if (!root)
 		return 0;
 	item *curr = root;
 	int s = 0;

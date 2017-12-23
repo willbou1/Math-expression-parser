@@ -7,7 +7,7 @@ template <class T>
 class stack {
 private:
 	struct item {
-		item(T x, item *y = NULL) : data(x), next(y) {}
+		item(T data, item *next = NULL) : data(data), next(next) {}
 		T data;
 		item *next;
 	};
