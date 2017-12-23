@@ -3,30 +3,31 @@
 #include "stack.h"
 #include "queue.h"
 #include <vector>
-#include <sstream>
 #include <map>
+#include <sstream>
 
 using namespace std;
 
 struct error {
-	error(string x, string y) : name(x), description(y) {}
+	error(string name, string description) : name(name), description(description) {}
 	string name;
 	string description;
 };
 
 struct token {
-	token(string x, char y) : value(x), type(y) {}
+	token(string value, char type) : value(value), type(type) {}
 	string value;
 	char type;
 };
 
+bool isDigit(char x);
 long double power(long double x, long double y);
 string ctos(char);
 long double calculate(long double, long double, char);
 void initPriority();
 void tokenize(const string &, vector<token> &);
 void verify(vector<token> &);
-int checkParentesis(vector<char> &);
+bool checkParentesis(vector<char> &);
 void toPostfix(queue &, stack<char> &, vector<token> &);
 long double resolve(queue &);
 long double parse(const string &);
@@ -40,9 +41,7 @@ int pVerify(string x) {
 		if (x[i] != ' ')
 			ok = true;
 	}
-	if (ok == false)
-		return 1;
-	return 0;
+	return !ok;
 }
 
 map<char, int> pTable;
@@ -54,12 +53,16 @@ int main() {
 	while (1) {
 		if (exp == "q" || exp == "quit" || exp == "exit")
 			break;
-		cout << ">>";
+		cout << ">>>";
 		getline(cin, exp);
 		if (!pVerify(exp))
 			cout << parse(exp) << endl;
 	}
 	return 0;
+}
+
+bool isDigit(char x) {
+	return x >= '0' && x <= '9';
 }
 
 long double power(long double x, long double y) {
@@ -69,9 +72,7 @@ long double power(long double x, long double y) {
 }
 
 string ctos(char x) {
-	stringstream c;
-	c << x;
-	return c.str();
+	return string(&x, 1);
 }
 
 long double calculate(long double x, long double y, char type) {
@@ -129,7 +130,7 @@ void tokenize(const string &exp, vector<token> &tokens) {
 				number = "";
 			}
 		}
-		else if (isdigit(curr) || curr == '.' || curr == '_') {
+		else if (isDigit(curr) || curr == '.' || curr == '_') {
 			if (curr == '_') {
 				if (number.size() != 0) {
 					tokens.push_back(token(number, 'n'));
@@ -157,30 +158,30 @@ void verify(vector<token> &tokens) {
 		throw error("Verification error", "You can not end an expression with an operator");
 	}
 	vector<char> parentesis;
-	bool lwo = false, lwn = false, otp = false;
+	bool lastWasOp = false, lastWasNum = false, otp = false;
 	for (vector<token>::iterator it = tokens.begin(); it != tokens.end(); it++) {
 		if (it->type == 'n') {
-			if (lwn)
+			if (lastWasNum)
 				throw error("Verification error", "You can not have a number following another number");
-			otp = lwn = true;
-			lwo = false;
+			otp = lastWasNum = true;
+			lastWasOp = false;
 		}
 		else {
 			if (it->value == "(") {
 				parentesis.push_back('(');
-				lwn = false;
-				lwo = false;
+				lastWasNum = false;
+				lastWasOp = false;
 			}
 			else if (it->value == ")") {
 				parentesis.push_back(')');
-				lwn = false;
-				lwo = false;
+				lastWasNum = false;
+				lastWasOp = false;
 			}
 			else {
-				if (lwo)
+				if (lastWasOp)
 					throw error("Verification error", "You can not have an operator following another operator");
-				otp = lwo = true;
-				lwn = false;
+				otp = lastWasOp = true;
+				lastWasNum = false;
 			}
 		}
 	}
@@ -196,7 +197,7 @@ void verify(vector<token> &tokens) {
 	}
 }
 
-int checkParentesis(vector<char> &parentesis) {
+bool checkParentesis(vector<char> &parentesis) {
 	stack<char> s;
 	for (vector<char>::iterator it = parentesis.begin(); it != parentesis.end(); it++) {
 		if (*it == '(')
@@ -207,10 +208,7 @@ int checkParentesis(vector<char> &parentesis) {
 			s.pop();
 		}
 	}
-	
-	if (s.size() != 0)
-		return 1;
-	return 0;
+	return s.size();
 }
 
 void toPostfix(queue &output, stack<char> &operators, vector<token> &tokens) {
@@ -222,8 +220,7 @@ void toPostfix(queue &output, stack<char> &operators, vector<token> &tokens) {
 				operators.push('(');
 			else if (it->value == ")") {
 				while (1) {
-					char curr = operators.top();
-					operators.pop();
+					char curr = operators.pop();
 					if (curr == '(')
 						break;
 					output.push(ctos(curr));
@@ -252,8 +249,7 @@ void toPostfix(queue &output, stack<char> &operators, vector<token> &tokens) {
 		}
 	}
 	while (operators.size() != 0) {
-		output.push(ctos(operators.top()));
-		operators.pop();
+		output.push(ctos(operators.pop()));
 	}
 }
 

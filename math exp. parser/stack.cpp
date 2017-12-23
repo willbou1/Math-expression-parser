@@ -14,12 +14,14 @@ void stack<T>::push(T data) {
 }
 
 template <class T>
-void stack<T>::pop() {
+T stack<T>::pop() {
 	if (!root)
-		return;
+		return NULL;
 	item *temp = root->next;
+	T value = root->data;
 	delete root;
 	root = temp;
+	return value;
 }
 
 template <class T>

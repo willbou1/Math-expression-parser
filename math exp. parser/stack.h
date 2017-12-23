@@ -16,7 +16,7 @@ private:
 public:
 	stack();
 	void push(T);
-	void pop();
+	T pop();
 	T top() const;
 	int size() const;
 };
